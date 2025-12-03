@@ -4,7 +4,7 @@ const BASE_URL = "https://v2.api.noroff.dev";
 
 async function request(path, { method = "GET", body, headers = {} } = {}) {
     const token = getToken();
-    const url = `${"BASE_URL"}${path}`;
+    const url = `${BASE_URL}${path}`;
 
     const init = {
         method,
