@@ -1,5 +1,6 @@
 import { getListings } from "../api/listingsApi.js";
 import { navigateTo } from "../router/router.js";
+import { getHighestBidAmount } from "../components/bidValue.js";
 
 
 export function renderHomeView(root) {
@@ -104,21 +105,10 @@ export function renderHomeView(root) {
         listing._count && typeof listing._count.bids === "number"
           ? listing._count.bids
           : 0;
+      const maxAmount = getHighestBidAmount(listing);
+      const highestBidText =
+        maxAmount === null ? "No bids yet" : `Highest bid: ${maxAmount} kr`;
 
-      const bids = Array.isArray(listing.bids) ? listing.bids : [];
-      let highestBidText = "No bids yet";
-      if (bids.length > 0) {
-        let maxAmount = bids[0].amount;
-        for (let j = 1; j < bids.length; j++) {
-          const bidAmount = bids[j].amount;
-          if (typeof bidAmount === "number" && bidAmount > maxAmount) {
-            maxAmount = bidAmount;
-          }
-        }
-        if (typeof maxAmount === "number") {
-          highestBidText = `Highest bid: ${maxAmount} kr`;
-        }
-      }
 
       // Time left text
       let timeLeftText = '<span class="text-red-600">Ended</span>';
