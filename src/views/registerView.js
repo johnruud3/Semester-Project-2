@@ -1,5 +1,9 @@
+import { register, login } from "../api/authApi.js";
+import { setAuthData } from "../auth/authState.js";
+import { navigateTo } from "../router/router.js";
+
 export function renderRegisterView(root) {
-    root.innerHTML = `
+  root.innerHTML = `
     <section class="max-w-md mx-auto space-y-6">
       <header>
         <h1 class="text-2xl font-semibold text-slate-900">Create an account</h1>
@@ -38,6 +42,17 @@ export function renderRegisterView(root) {
               class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5"
             />
           </div>
+          <div class="space-y-1 text-sm">
+            <label for="confirm-password" class="block font-medium text-slate-700">Confirm password</label>
+            <input
+              id="confirm-password"
+              name="confirmPassword"
+              type="password"
+              minlength="8"
+              required
+              class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5"
+            />
+          </div>
           <p class="text-xs text-slate-500">
             We will validate that your email ends with <code>@stud.noroff.no</code> before creating the account.
           </p>
@@ -53,41 +68,69 @@ export function renderRegisterView(root) {
     </section>
   `;
 
-    const form = root.querySelector("#register-form");
-    const errorEl = root.querySelector("#register-error");
-    const submitBtn = form?.querySelector("button[type='submit']");
+  const form = root.querySelector("#register-form");
+  const errorEl = root.querySelector("#register-error");
+  const submitBtn = form?.querySelector("button[type='submit']");
 
-    if (!form) return;
+  if (!form || !submitBtn) return;
 
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault();
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-        if (!submitBtn) return;
+    const formData = new FormData(form);
+    const name = String(formData.get("name") || "").trim();
+    const email = String(formData.get("email") || "").trim();
+    const password = String(formData.get("password") || "");
+    const confirmPassword = String(formData.get("confirmPassword") || "");
 
-        const formData = new FormData(form);
-        const email = String(formData.get("email") || "").trim();
+    if (!email.toLowerCase().endsWith("@stud.noroff.no")) {
+      if (errorEl) {
+        errorEl.textContent = "You must register with a Noroff student email (ending in @stud.noroff.no).";
+        errorEl.classList.remove("hidden");
+      }
+      return;
+    }
 
-        if (!email.toLowerCase().endsWith("@stud.noroff.no")) {
-            if (errorEl) {
-                errorEl.textContent = "You must register with a Noroff student email (ending in @stud.noroff.no).";
-                errorEl.classList.remove("hidden");
-            }
-            return;
-        }
+    if (password !== confirmPassword) {
+      if (errorEl) {
+        errorEl.textContent = "Passwords do not match.";
+        errorEl.classList.remove("hidden");
+      }
+      return;
+    }
 
-        submitBtn.disabled = true;
-        if (errorEl) {
-            errorEl.classList.add("hidden");
-            errorEl.textContent = "";
-        }
+    submitBtn.disabled = true;
+    if (errorEl) {
+      errorEl.classList.add("hidden");
+      errorEl.textContent = "";
+    }
 
-        // TODO: hook into Noroff v2 register endpoint and set auth state
-        setTimeout(() => {
-            submitBtn.disabled = false;
-            if (errorEl) {
-                errorEl.textContent = "Registration functionality not implemented yet.";
-                errorEl.classList.remove("hidden");
-            }
-        }, 400);
-    });
+    try {
+      await register({ name, email, password });
+
+      const loginResponse = await login({ email, password });
+      const data = loginResponse?.data || loginResponse;
+
+      const accessToken = data?.accessToken || data?.token;
+      const user = data?.user || {
+        name: data?.name ?? name,
+        email: data?.email ?? email,
+      };
+
+      if (!accessToken) {
+        throw new Error("Login failed after registration. Please try logging in manually.");
+      }
+
+      setAuthData({ accessToken, user });
+
+      navigateTo("home");
+    } catch (error) {
+      if (errorEl) {
+        errorEl.textContent = error.message || "Registration failed. Please try again.";
+        errorEl.classList.remove("hidden");
+      }
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
 }

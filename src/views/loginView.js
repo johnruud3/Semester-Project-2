@@ -1,5 +1,9 @@
+import { login } from "../api/authApi.js";
+import { setAuthData } from "../auth/authState.js";
+import { navigateTo } from "../router/router.js";
+
 export function renderLoginView(root) {
-    root.innerHTML = `
+  root.innerHTML = `
     <section class="max-w-md mx-auto space-y-6">
       <header>
         <h1 class="text-2xl font-semibold text-slate-900">Login</h1>
@@ -42,34 +46,53 @@ export function renderLoginView(root) {
     </section>
   `;
 
-    const form = root.querySelector("#login-form");
-    const errorEl = root.querySelector("#login-error");
-    const submitBtn = form?.querySelector("button[type='submit']");
+  const form = root.querySelector("#login-form");
+  const errorEl = root.querySelector("#login-error");
+  const submitBtn = form?.querySelector("button[type='submit']");
 
-    if (!form) return;
+  if (!form || !submitBtn) return;
 
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault();
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-        if (!submitBtn) return;
+    const formData = new FormData(form);
+    const email = String(formData.get("email") || "").trim();
+    const password = String(formData.get("password") || "");
 
-        const formData = new FormData(form);
-        const email = formData.get("email");
-        const password = formData.get("password");
+    if (!email.toLowerCase().endsWith("@stud.noroff.no")) {
+      if (errorEl) {
+        errorEl.textContent = "You must log in with a Noroff student email (ending in @stud.noroff.no).";
+        errorEl.classList.remove("hidden");
+      }
+      return;
+    }
 
-        submitBtn.disabled = true;
-        if (errorEl) {
-            errorEl.classList.add("hidden");
-            errorEl.textContent = "";
-        }
+    submitBtn.disabled = true;
+    if (errorEl) {
+      errorEl.classList.add("hidden");
+      errorEl.textContent = "";
+    }
 
-        // TODO: hook into Noroff v2 login endpoint and update auth state
-        setTimeout(() => {
-            submitBtn.disabled = false;
-            if (errorEl) {
-                errorEl.textContent = "Login functionality not implemented yet.";
-                errorEl.classList.remove("hidden");
-            }
-        }, 400);
-    });
+    try {
+      const response = await login({ email, password });
+      const data = response?.data || response;
+
+      const accessToken = data?.accessToken || data?.token;
+      const user = data?.user || { name: data?.name, email: data?.email ?? email };
+
+      if (!accessToken) {
+        throw new Error("Login failed. Please try again.");
+      }
+
+      setAuthData({ accessToken, user });
+      navigateTo("home");
+    } catch (error) {
+      if (errorEl) {
+        errorEl.textContent = error.message || "Login failed. Please check your credentials and try again.";
+        errorEl.classList.remove("hidden");
+      }
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
 }
