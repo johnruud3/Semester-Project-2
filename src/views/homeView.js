@@ -46,17 +46,19 @@ export function renderHomeView(root) {
 
     const normalizedSearch = (searchTerm || "").toLowerCase().trim();
 
-    // Filter by search term first (title, description, seller name)
+    // Filter by search term first (title, description, seller name and tags)
     const filteredListings = normalizedSearch
       ? allListings.filter((listing) => {
         const title = (listing.title || "").toLowerCase();
         const description = (listing.description || "").toLowerCase();
         const sellerName = (listing.seller?.name || "").toLowerCase();
+        const tags = Array.isArray(listing.tags) ? listing.tags.join(" ").toLowerCase() : "";
 
         return (
           title.includes(normalizedSearch) ||
           description.includes(normalizedSearch) ||
-          sellerName.includes(normalizedSearch)
+          sellerName.includes(normalizedSearch) ||
+          tags.includes(normalizedSearch)
         );
       })
       : allListings;
@@ -103,6 +105,21 @@ export function renderHomeView(root) {
           ? listing._count.bids
           : 0;
 
+      const bids = Array.isArray(listing.bids) ? listing.bids : [];
+      let highestBidText = "No bids yet";
+      if (bids.length > 0) {
+        let maxAmount = bids[0].amount;
+        for (let j = 1; j < bids.length; j++) {
+          const bidAmount = bids[j].amount;
+          if (typeof bidAmount === "number" && bidAmount > maxAmount) {
+            maxAmount = bidAmount;
+          }
+        }
+        if (typeof maxAmount === "number") {
+          highestBidText = `Highest bid: ${maxAmount} kr`;
+        }
+      }
+
       // Time left text
       let timeLeftText = '<span class="text-red-600">Ended</span>';
       if (endsAt) {
@@ -136,8 +153,11 @@ export function renderHomeView(root) {
       html += `
     <article class="rounded-lg border border-slate-200 bg-white overflow-hidden text-sm flex flex-col">
       ${hasImage
-          ? `<div class="cursor-pointer h-40 bg-slate-100 overflow-hidden" data-listing-id="${id}">
+          ? `<div class="cursor-pointer h-40 bg-slate-100 overflow-hidden relative" data-listing-id="${id}">
              <img src="${imageUrl}" alt="${imageAlt}" class="w-full h-full object-cover" />
+             <div class="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+               ${highestBidText}
+             </div>
            </div>`
           : `<div class="h-40 bg-slate-100 flex items-center justify-center text-xs text-slate-400">
              No image
