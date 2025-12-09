@@ -1,7 +1,8 @@
 import { getCurrentUser, updateUser } from "../auth/authState.js";
 import { get, put } from "../api/httpClient.js";
-import { getListings } from "../api/listingsApi.js";
+import { getListings, deleteListing } from "../api/listingsApi.js";
 import { navigateTo } from "../router/router.js";
+import { renderListingEditView } from "./listingEditView.js";
 
 export function renderProfileView(root) {
   const user = getCurrentUser();
@@ -271,6 +272,10 @@ export function renderProfileView(root) {
                     <span>Bids: ${bidsCount}</span>
                   </div>
                 </div>
+                <div class="flex justify-end gap-2 px-3 py-2">
+                  <button type="button" class="js-edit-listing px-3 py-2 border-slate-200 border text-sm rounded-md text-slate-600 hover:bg-slate-50">Edit</button>
+                  <button type="button" class="js-delete-listing px-3 py-2 text-red-600 border-slate-200 border text-sm rounded-md hover:bg-slate-50">Delete</button>
+                </div>
               </article>
             `;
           }
@@ -283,6 +288,37 @@ export function renderProfileView(root) {
               if (!id) return;
               navigateTo(`listing/${id}`);
             });
+
+            const editBtn = card.querySelector(".js-edit-listing");
+            if (editBtn) {
+              editBtn.addEventListener("click", (event) => {
+                event.stopPropagation();
+                const id = card.getAttribute("data-my-listing-id");
+                if (!id) return;
+                navigateTo(`listing/${id}/edit`);
+              });
+            }
+
+            const deleteBtn = card.querySelector(".js-delete-listing");
+            if (deleteBtn) {
+              deleteBtn.addEventListener("click", async (event) => {
+                event.stopPropagation();
+                const id = card.getAttribute("data-my-listing-id");
+                if (!id) return;
+
+                const confirmed = window.confirm("Are you sure you want to delete this listing? This cannot be undone.");
+                if (!confirmed) return;
+
+                deleteBtn.disabled = true;
+                try {
+                  await deleteListing(id);
+                  card.remove();
+                } catch (error) {
+                  alert(error.message || "Failed to delete listing.");
+                  deleteBtn.disabled = false;
+                }
+              });
+            }
           });
         }
       }
