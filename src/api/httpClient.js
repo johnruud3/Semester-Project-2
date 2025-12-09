@@ -29,14 +29,20 @@ async function request(path, { method = "GET", body, headers = {} } = {}) {
 
     const res = await fetch(url, init);
 
-    let data;
+    let data = null;
+    let parseError = null;
+
     try {
         data = await res.json();
     } catch (error) {
-        throw new Error("Failed to parse response from API");
+        parseError = error;
     }
 
     if (!res.ok) {
+        if (!data && parseError) {
+            throw new Error("Failed to parse response from API");
+        }
+
         const message = data?.errors?.[0]?.message || data?.message || "Unknown API error";
         throw new Error(message);
     }
