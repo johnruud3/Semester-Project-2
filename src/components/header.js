@@ -29,6 +29,7 @@ export function renderHeader(container, user) {
                   Credits: <span data-user-credits>${credits}</span>
                 </span>
                 <button data-nav="profile" class="text-sm text-slate-700 hover:text-slate-900">Profile</button>
+                <button data-nav="create-listing" class="text-sm text-slate-700 hover:text-slate-900">Create a listing</button>
                 <button data-logout class="text-sm text-red-600 hover:text-red-700">Logout</button>
               </div>`
       : `<div class="flex items-center gap-3 text-sm">
@@ -45,12 +46,13 @@ export function renderHeader(container, user) {
   const registerBtn = container.querySelector("[data-nav='register']");
   const profileBtn = container.querySelector("[data-nav='profile']");
   const logoutBtn = container.querySelector("[data-logout]");
+  const createListingBtn = container.querySelector("[data-nav='create-listing']");
 
   if (homeBtn) homeBtn.addEventListener("click", () => navigateTo(""));
   if (loginBtn) loginBtn.addEventListener("click", () => navigateTo("login"));
   if (registerBtn) registerBtn.addEventListener("click", () => navigateTo("register"));
   if (profileBtn) profileBtn.addEventListener("click", () => navigateTo("profile"));
-
+  if (createListingBtn) createListingBtn.addEventListener("click", () => navigateTo("listing/new"));
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       logout();

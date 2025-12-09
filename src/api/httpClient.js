@@ -1,6 +1,7 @@
 import { getToken } from "../auth/authState.js";
 
 const BASE_URL = "https://v2.api.noroff.dev";
+const API_KEY = "ffff7304-c7af-4c12-9d88-9a949d3d7d30";
 
 async function request(path, { method = "GET", body, headers = {} } = {}) {
     const token = getToken();
@@ -13,6 +14,10 @@ async function request(path, { method = "GET", body, headers = {} } = {}) {
             ...headers,
         },
     };
+
+    if (API_KEY) {
+        init.headers["X-Noroff-API-Key"] = API_KEY;
+    }
 
     if (token) {
         init.headers.Authorization = `Bearer ${token}`;

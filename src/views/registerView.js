@@ -1,6 +1,7 @@
 import { register, login } from "../api/authApi.js";
 import { setAuthData } from "../auth/authState.js";
 import { navigateTo } from "../router/router.js";
+import { profileCredits } from "../auth/profileCredits.js";
 
 export function renderRegisterView(root) {
   root.innerHTML = `
@@ -112,7 +113,7 @@ export function renderRegisterView(root) {
       const data = loginResponse?.data || loginResponse;
 
       const accessToken = data?.accessToken || data?.token;
-      const user = data?.user || {
+      let user = data?.user || {
         name: data?.name ?? name,
         email: data?.email ?? email,
       };
@@ -121,8 +122,13 @@ export function renderRegisterView(root) {
         throw new Error("Login failed after registration. Please try logging in manually.");
       }
 
+      // This is to sett the basic state with the user data (For the users stored credits)
       setAuthData({ accessToken, user });
 
+      user = await profileCredits(user);
+
+      // This is to update the state with the profile data
+      setAuthData({ accessToken, user });
       navigateTo("home");
     } catch (error) {
       if (errorEl) {

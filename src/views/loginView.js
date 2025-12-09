@@ -1,6 +1,7 @@
 import { login } from "../api/authApi.js";
 import { setAuthData } from "../auth/authState.js";
 import { navigateTo } from "../router/router.js";
+import { profileCredits } from "../auth/profileCredits.js";
 
 export function renderLoginView(root) {
   root.innerHTML = `
@@ -78,13 +79,18 @@ export function renderLoginView(root) {
       const data = response?.data || response;
 
       const accessToken = data?.accessToken || data?.token;
-      const user = data?.user || { name: data?.name, email: data?.email ?? email };
+      let user = data?.user || { name: data?.name, email: data?.email ?? email };
 
       if (!accessToken) {
         throw new Error("Login failed. Please try again.");
       }
 
       setAuthData({ accessToken, user });
+
+      user = await profileCredits(user);
+
+      setAuthData({ accessToken, user });
+
       navigateTo("home");
     } catch (error) {
       if (errorEl) {
