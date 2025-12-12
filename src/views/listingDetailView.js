@@ -22,7 +22,7 @@ export function renderListingDetailView(root, params) {
     <section class="space-y-4" id="listing-detail">
       <header>
         <p class="text-xs uppercase tracking-wide text-slate-400">Listing</p>
-        <h1 class="text-2xl font-semibold text-slate-900">Loading listing...</h1>
+        <h1 class="text-2xl font-semibold">Loading listing...</h1>
         <p class="text-sm text-slate-600">Please wait while we fetch the latest details.</p>
       </header>
     </section>
@@ -85,7 +85,7 @@ export function renderListingDetailView(root, params) {
         <section class="space-y-6">
           <header class="space-y-2">
             <p class="text-xs uppercase tracking-wide text-slate-400">Listing</p>
-            <h1 class="text-2xl font-semibold text-slate-900">${title}</h1>
+            <h1 class="text-2xl font-semibold">${title}</h1>
             <p class="text-sm text-slate-600">Posted by <span class="font-medium text-blue-500">${sellerName}</span> on ${createdText}</p>
           </header>
 
@@ -214,7 +214,7 @@ export function renderListingDetailView(root, params) {
         <section class="space-y-4">
           <header>
             <p class="text-xs uppercase tracking-wide text-slate-400">Listing</p>
-            <h1 class="text-2xl font-semibold text-red-600">Could not load listing</h1>
+            <h2 class="text-2xl font-semibold text-red-600">Could not load listing</h2>
             <p class="text-sm text-slate-600">${error.message || "Please try again later."}</p>
           </header>
         </section>

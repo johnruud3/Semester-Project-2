@@ -8,7 +8,7 @@ export function renderHomeView(root) {
     <section class="space-y-4">
       <header class="flex items-center justify-between gap-4">
         <div>
-          <h1 class="text-2xl font-semibold text-slate-900">Browse listings</h1>
+          <h1 class="text-2xl font-semibold">Browse listings</h1>
           <p class="text-sm text-slate-600">Search and explore active auctions. You can bid once you log in.</p>
         </div>
         <div class="flex items-center gap-2">
@@ -141,7 +141,7 @@ export function renderHomeView(root) {
       const hasImage = imageUrl !== "";
 
       html += `
-    <article class="rounded-lg border border-slate-200 bg-white overflow-hidden text-sm flex flex-col">
+    <article class="app-card overflow-hidden text-sm flex flex-col transition-transform duration-150 hover:-translate-y-1 hover:shadow-lg cursor-pointer">
       ${hasImage
           ? `<div class="cursor-pointer h-40 bg-slate-100 overflow-hidden relative" data-listing-id="${id}">
              <img src="${imageUrl}" alt="${imageAlt}" class="w-full h-full object-cover" />
@@ -154,16 +154,16 @@ export function renderHomeView(root) {
            </div>`
         }
       <div class="p-4 flex-1 flex flex-col gap-2">
-        <h1 class="text-lg font-bold text-slate-900"> By: 
+        <h2 class="text-lg font-bold text-slate-900"> By: 
           <span class="cursor-pointer font-bold text-blue-400">${listing.seller?.name || "Unknown"
         }</span>
-        </h1>
+        </h2>
         <p class="text-sm text-slate-500">Posted: ${createdText}</p>
         <h2 class="text-base font-semibold text-slate-900">${title}</h2>
         <p class="text-slate-600 line-clamp-3">${description}</p>
         <div class="mt-auto flex items-center justify-between text-xs text-slate-500">
           <span class="font-medium text-slate-700">Ends in: ${timeLeftText}</span>
-          <span class="font-medium text-slate-700">Bids: ${bidsCount}</span>
+          <span class="app-badge font-medium text-slate-700">Bids: ${bidsCount}</span>
         </div>
       </div>
     </article>

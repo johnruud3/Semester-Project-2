@@ -7,7 +7,7 @@ export function renderRegisterView(root) {
   root.innerHTML = `
     <section class="max-w-md mx-auto space-y-6">
       <header>
-        <h1 class="text-2xl font-semibold text-slate-900">Create an account</h1>
+        <h1 class="text-2xl font-semibold">Create an account</h1>
         <p class="text-sm text-slate-600">Only Noroff students with an email ending in <code>@stud.noroff.no</code> can register.</p>
       </header>
       <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
