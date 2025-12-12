@@ -7,7 +7,7 @@ export function renderLoginView(root) {
   root.innerHTML = `
     <section class="max-w-md mx-auto space-y-6">
       <header>
-        <h1 class="text-2xl font-semibold text-slate-900">Login</h1>
+        <h1 class="text-2xl font-semibold">Login</h1>
         <p class="text-sm text-slate-600">Access your account to create listings, manage your profile, and place bids.</p>
       </header>
       <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">

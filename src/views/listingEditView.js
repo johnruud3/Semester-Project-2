@@ -8,7 +8,7 @@ export function renderListingEditView(root, params) {
     root.innerHTML = `
       <section class="space-y-4">
         <header>
-          <h1 class="text-2xl font-semibold text-slate-900">Edit listing</h1>
+          <h1 class="text-2xl font-semibold">Edit listing</h1>
         </header>
         <p class="text-sm text-red-600">No listing id provided.</p>
       </section>
@@ -19,7 +19,7 @@ export function renderListingEditView(root, params) {
   root.innerHTML = `
     <section class="max-w-2xl mx-auto space-y-6">
       <header>
-        <h1 class="text-2xl font-semibold text-slate-900">Edit listing</h1>
+        <h1 class="text-2xl font-semibold">Edit listing</h1>
         <p class="text-sm text-slate-600">Update details for listing #${id}.</p>
       </header>
 

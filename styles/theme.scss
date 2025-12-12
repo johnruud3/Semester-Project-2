@@ -1,0 +1,46 @@
+// Simple design tokens (slightly modernized, softer palette)
+$color-page-bg: #f3f4f6; // light slate/neutral background
+$color-card-bg: #ffffff;
+$color-card-border: #e5e7eb; // neutral-200
+$color-primary: #0f172a; // slate-900
+$shadow-card: 0 18px 40px rgba(15, 23, 42, 0.06);
+$radius-card: 0.9rem;
+
+// Page background
+.app-page-bg {
+    background-color: $color-page-bg;
+    background-image: radial-gradient(circle at top left, rgba(129, 140, 248, 0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(45, 212, 191, 0.16), transparent 55%);
+}
+
+// Header style
+.app-page-header {
+    background-color: #eef2ff;
+    color: $color-primary;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+// Reusable card style
+.app-card {
+    background-color: $color-card-bg;
+    border-radius: $radius-card;
+    border: 1px solid $color-card-border;
+    box-shadow: $shadow-card;
+}
+
+// Small badge
+.app-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 999px;
+    background-color: rgba(15, 23, 42, 0.04);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    color: $color-primary;
+}
+
+h1 {
+    color: #047857;
+}

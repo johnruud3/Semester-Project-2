@@ -18,8 +18,8 @@ export function renderHeader(container, user) {
   container.innerHTML = `
     <div class="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
       <div class="flex items-center gap-3">
-        <button class="text-xl font-semibold text-slate-900" data-nav="home">
-          Noroff Auction
+        <button class="text-xl font-semibold text-emerald-700" data-nav="home">
+          SELLABLY
         </button>
       </div>
       <div class="flex items-center gap-6">

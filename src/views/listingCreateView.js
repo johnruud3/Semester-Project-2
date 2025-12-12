@@ -5,7 +5,7 @@ export function renderListingCreateView(root) {
   root.innerHTML = `
     <section class="max-w-2xl mx-auto space-y-6">
       <header>
-        <h1 class="text-2xl font-semibold text-slate-900">Create a new listing</h1>
+        <h1 class="text-2xl font-semibold">Create a new listing</h1>
         <p class="text-sm text-slate-600">Provide a title, end date, image URL, and description.</p>
       </header>
 
