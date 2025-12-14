@@ -27,7 +27,7 @@ export function renderProfileView(root) {
       </header>
 
       <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div class="h-40 bg-slate-100">
+        <div class="h-32 sm:h-40 bg-slate-100">
           <img
             id="profile-banner-img"
             alt="Profile banner"
@@ -37,25 +37,25 @@ export function renderProfileView(root) {
       </div>
 
       <div id="profile-content" class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div class="p-6 flex flex-col gap-4">
-          <div class="flex items-center justify-between gap-4">
-            <div id="profile-avatar" class="h-16 w-16 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-sm font-medium">
-              ${user.name ? user.name.charAt(0).toUpperCase() : "?"}
-            </div>
-            <div class="flex-1 flex items-center justify-between gap-4">
-              <div class="space-y-1">
-                <h2 class="text-xl font-semibold text-slate-900" id="profile-name">${user.name || "Unknown"}</h2>
-                <p class="text-sm text-slate-600" id="profile-email">${user.email || ""}</p>
-                <p class="text-sm text-emerald-700 font-medium" id="profile-credits">Credits: Loading...</p>
+        <div class="p-4 sm:p-6 flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div class="flex items-center gap-4 flex-1">
+              <div id="profile-avatar" class="h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-sm font-medium">
+                ${user.name ? user.name.charAt(0).toUpperCase() : "?"}
               </div>
-              <button
-                id="toggle-edit-profile"
-                type="button"
-                class="text-xs font-medium text-slate-700 border border-slate-200 rounded-full px-3 py-1 hover:bg-slate-50"
-              >
-                Edit profile
-              </button>
+              <div class="space-y-1 flex-1">
+                <h2 class="text-lg sm:text-xl font-semibold text-slate-900" id="profile-name">${user.name || "Unknown"}</h2>
+                <p class="text-xs sm:text-sm text-slate-600" id="profile-email">${user.email || ""}</p>
+                <p class="text-xs sm:text-sm text-emerald-700 font-medium" id="profile-credits">Credits: Loading...</p>
+              </div>
             </div>
+            <button
+              id="toggle-edit-profile"
+              type="button"
+              class="w-full sm:w-auto text-xs font-medium text-slate-700 border border-slate-200 rounded-full px-3 py-1.5 hover:bg-slate-50"
+            >
+              Edit profile
+            </button>
           </div>
 
           <div id="profile-extra" class="text-sm text-slate-500 italic">

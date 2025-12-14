@@ -1,6 +1,7 @@
 import { getListingById, placeBid } from "../api/listingsApi.js";
-import { isAuthenticated } from "../auth/authState.js";
+import { isAuthenticated, getCurrentUser, updateUser } from "../auth/authState.js";
 import { getHighestBidAmount } from "../components/bidValue.js";
+import { profileCredits } from "../auth/profileCredits.js";
 
 export function renderListingDetailView(root, params) {
   const { id } = params || {};
@@ -92,10 +93,10 @@ export function renderListingDetailView(root, params) {
           <div class="grid gap-6 md:grid-cols-2">
             <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
               ${hasImage
-          ? `<div class="h-64 bg-slate-100 overflow-hidden">
+          ? `<div class="h-48 sm:h-64 bg-slate-100 overflow-hidden">
                      <img src="${imageUrl}" alt="${imageAlt}" class="w-full h-full object-cover" />
                    </div>`
-          : `<div class="h-64 bg-slate-100 flex items-center justify-center text-xs text-slate-400">
+          : `<div class="h-48 sm:h-64 bg-slate-100 flex items-center justify-center text-xs text-slate-400">
                      No image
                    </div>`
         }
@@ -124,18 +125,18 @@ export function renderListingDetailView(root, params) {
                   <span class="font-medium text-slate-900">${bidsCount}</span>
                 </div>
                 ${canBid
-          ? `<form id="bid-form" class="mt-2 flex items-center gap-3">
+          ? `<form id="bid-form" class="mt-2 flex flex-col sm:flex-row gap-2">
                        <input
                          type="number"
                          min="1"
                          step="1"
                          id="bid-amount"
-                         class="w-32 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5"
+                         class="flex-1 sm:w-32 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5"
                          placeholder="Your bid"
                        />
                        <button
                          type="submit"
-                         class="px-3 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-60 disabled:cursor-not-allowed"
+                         class="w-full sm:w-auto px-4 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-60 disabled:cursor-not-allowed"
                        >
                          Place bid
                        </button>
@@ -154,8 +155,8 @@ export function renderListingDetailView(root, params) {
             .sort((a, b) => new Date(b.created) - new Date(a.created))
             .slice(0, 5)
             .map(
-              (bid) => `<li>Bid of ${bid.amount} by <span class="font-medium">${bid.bidderName || bid.bidder?.name || "Unknown"
-                }</span><span class="text-green-600 ml-2">${highestBidText}</span></li>`
+              (bid) => `<li>Bid of <span class="font-medium text-slate-900">${bid.amount} kr</span> by <span class="font-medium">${bid.bidderName || bid.bidder?.name || "Unknown"
+                }</span></li>`
             )
             .join("")}
                      </ul>`
@@ -190,10 +191,18 @@ export function renderListingDetailView(root, params) {
             bidMessage.className = "text-xs text-slate-500 mt-1";
 
             placeBid(id, amount)
-              .then(() => {
+              .then(async () => {
                 bidMessage.textContent = "Bid placed successfully!";
                 bidMessage.className = "text-xs text-emerald-700 mt-1";
                 bidAmountInput.value = "";
+
+                // Update user credits live
+                const currentUser = getCurrentUser();
+                if (currentUser) {
+                  const updatedUser = await profileCredits(currentUser);
+                  updateUser(updatedUser);
+                }
+
                 // Re-fetch listing to update bids and counts
                 renderListingDetailView(root, { id });
               })

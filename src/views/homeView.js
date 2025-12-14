@@ -6,21 +6,21 @@ import { getHighestBidAmount } from "../components/bidValue.js";
 export function renderHomeView(root) {
   root.innerHTML = `
     <section class="space-y-4">
-      <header class="flex items-center justify-between gap-4">
+      <header class="space-y-4">
         <div>
           <h1 class="text-2xl font-semibold">Browse listings</h1>
           <p class="text-sm text-slate-600">Search and explore active auctions. You can bid once you log in.</p>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex flex-col sm:flex-row gap-2">
           <input
             type="search"
             placeholder="Search listings..."
             id="search-listings"
-            class="w-56 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5"
+            class="flex-1 sm:flex-none sm:w-56 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5"
           />
           <select
             id="sort-listings"
-            class="w-46 cursor-pointer rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5"
+            class="w-full sm:w-auto cursor-pointer rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5"
           >
             <option value="active-first">Active first</option>
             <option value="ended-first">Ended first</option>
@@ -88,7 +88,7 @@ export function renderHomeView(root) {
       return;
     }
 
-    listingsElement.className = "mt-6 grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-4";
+    listingsElement.className = "mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
     let html = "";
 
