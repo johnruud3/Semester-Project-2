@@ -2,7 +2,6 @@ import { getListings } from "../api/listingsApi.js";
 import { navigateTo } from "../router/router.js";
 import { getHighestBidAmount } from "../components/bidValue.js";
 
-
 export function renderHomeView(root) {
   root.innerHTML = `
     <section class="space-y-4">
@@ -50,18 +49,20 @@ export function renderHomeView(root) {
     // Filter by search term first (title, description, seller name and tags)
     const filteredListings = normalizedSearch
       ? allListings.filter((listing) => {
-        const title = (listing.title || "").toLowerCase();
-        const description = (listing.description || "").toLowerCase();
-        const sellerName = (listing.seller?.name || "").toLowerCase();
-        const tags = Array.isArray(listing.tags) ? listing.tags.join(" ").toLowerCase() : "";
+          const title = (listing.title || "").toLowerCase();
+          const description = (listing.description || "").toLowerCase();
+          const sellerName = (listing.seller?.name || "").toLowerCase();
+          const tags = Array.isArray(listing.tags)
+            ? listing.tags.join(" ").toLowerCase()
+            : "";
 
-        return (
-          title.includes(normalizedSearch) ||
-          description.includes(normalizedSearch) ||
-          sellerName.includes(normalizedSearch) ||
-          tags.includes(normalizedSearch)
-        );
-      })
+          return (
+            title.includes(normalizedSearch) ||
+            description.includes(normalizedSearch) ||
+            sellerName.includes(normalizedSearch) ||
+            tags.includes(normalizedSearch)
+          );
+        })
       : allListings;
 
     const activeListings = filteredListings.filter((listing) => {
@@ -88,7 +89,8 @@ export function renderHomeView(root) {
       return;
     }
 
-    listingsElement.className = "mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
+    listingsElement.className =
+      "mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
     let html = "";
 
@@ -97,7 +99,9 @@ export function renderHomeView(root) {
 
       const id = listing.id || "";
       const createdAt = listing.created ? new Date(listing.created) : null;
-      const createdText = createdAt ? createdAt.toLocaleDateString() : "unknown";
+      const createdText = createdAt
+        ? createdAt.toLocaleDateString()
+        : "unknown";
       const title = listing.title || "Untitled";
       const description = listing.description || "";
       const endsAt = listing.endsAt || "";
@@ -108,7 +112,6 @@ export function renderHomeView(root) {
       const maxAmount = getHighestBidAmount(listing);
       const highestBidText =
         maxAmount === null ? "No bids yet" : `Highest bid: ${maxAmount} kr`;
-
 
       // Time left text
       let timeLeftText = '<span class="text-red-600">Ended</span>';
@@ -141,9 +144,10 @@ export function renderHomeView(root) {
       const hasImage = imageUrl !== "";
 
       html += `
-    <article class="app-card overflow-hidden text-sm flex flex-col transition-transform duration-150 hover:-translate-y-1 hover:shadow-lg cursor-pointer">
-      ${hasImage
-          ? `<div class="cursor-pointer h-40 bg-slate-100 overflow-hidden relative" data-listing-id="${id}">
+    <article class="app-card overflow-hidden text-sm flex flex-col transition-transform duration-150 hover:-translate-y-1 hover:shadow-lg cursor-pointer" data-listing-id="${id}">
+      ${
+        hasImage
+          ? `<div class="h-40 bg-slate-100 overflow-hidden relative">
              <img src="${imageUrl}" alt="${imageAlt}" class="w-full h-full object-cover" />
              <div class="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                ${highestBidText}
@@ -152,11 +156,12 @@ export function renderHomeView(root) {
           : `<div class="h-40 bg-slate-100 flex items-center justify-center text-xs text-slate-400">
              No image
            </div>`
-        }
+      }
       <div class="p-4 flex-1 flex flex-col gap-2">
         <h2 class="text-lg font-bold text-slate-900"> By: 
-          <span class="cursor-pointer font-bold text-blue-400">${listing.seller?.name || "Unknown"
-        }</span>
+          <span class="cursor-pointer font-bold text-blue-400">${
+            listing.seller?.name || "Unknown"
+          }</span>
         </h2>
         <p class="text-sm text-slate-500">Posted: ${createdText}</p>
         <h2 class="text-base font-semibold text-slate-900">${title}</h2>
@@ -194,7 +199,8 @@ export function renderHomeView(root) {
 
       // Initial render: active listings first
       function applyFiltersAndRender() {
-        const mode = sortSelect.value === "ended-first" ? "ended-first" : "active-first";
+        const mode =
+          sortSelect.value === "ended-first" ? "ended-first" : "active-first";
         const term = searchInput.value;
         renderListings(listings, mode, term);
       }
@@ -207,6 +213,7 @@ export function renderHomeView(root) {
     .catch((error) => {
       console.error("Failed to load listings", error);
       listingsElement.className = "mt-6 text-sm text-red-600";
-      listingsElement.textContent = "Could not load listings. Please try again later.";
+      listingsElement.textContent =
+        "Could not load listings. Please try again later.";
     });
 }
